@@ -6,3 +6,5 @@ type Filestore struct {
 	CaCertPath       string
 	CaPrivateKeyPath string
 }
+
+// TODO check filestore.go from libmachine

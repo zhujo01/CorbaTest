@@ -30,3 +30,5 @@ type Metadata struct {
 	ClusterOptions  Options
 }
 
+// cluster can do many things here
+
