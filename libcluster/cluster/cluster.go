@@ -11,7 +11,6 @@ type Cluster struct {
 	ConfigVersion	int
 	Driver		drivers.Driver
 	DriverName	string
-
 }
 
 type Options struct {

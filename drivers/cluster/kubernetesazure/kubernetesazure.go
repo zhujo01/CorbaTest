@@ -1,4 +1,5 @@
-package dockerswarm
+package kubernetesazure
+
 
 import (
 	"github.com/zhujo01/CorbaTest/libcluster/drivers"
@@ -6,7 +7,7 @@ import (
 	"github.com/zhujo01/CorbaTest/libcluster/state"
 )
 
-// Docker Swarm implementation of cluster driver interface
+// Kubernetes on Azure (implementation of cluster driver interface)
 
 
 
@@ -19,7 +20,7 @@ func (d *Driver) Create() error {
 }
 
 func (d *Driver) DriverName() string {
-	return "dockerswarm"
+	return "kubernetesazure"
 }
 
 func (d *Driver) GetCreateFlags() []mcnflag.Flag {

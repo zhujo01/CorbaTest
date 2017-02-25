@@ -1,4 +1,5 @@
-package dockerswarm
+package kubernetesgce
+
 
 import (
 	"github.com/zhujo01/CorbaTest/libcluster/drivers"
@@ -6,7 +7,7 @@ import (
 	"github.com/zhujo01/CorbaTest/libcluster/state"
 )
 
-// Docker Swarm implementation of cluster driver interface
+// Kubernetes on GCE (implementation of cluster driver interface)
 
 
 
@@ -19,7 +20,7 @@ func (d *Driver) Create() error {
 }
 
 func (d *Driver) DriverName() string {
-	return "dockerswarm"
+	return "kubernetesgce"
 }
 
 func (d *Driver) GetCreateFlags() []mcnflag.Flag {
@@ -62,3 +63,4 @@ func (d *Driver) Start() error {
 func (d *Driver) Stop() error {
 	return nil
 }
+

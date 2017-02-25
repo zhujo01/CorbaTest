@@ -1,4 +1,5 @@
-package dockerswarm
+package kubernetesaws
+
 
 import (
 	"github.com/zhujo01/CorbaTest/libcluster/drivers"
@@ -6,8 +7,7 @@ import (
 	"github.com/zhujo01/CorbaTest/libcluster/state"
 )
 
-// Docker Swarm implementation of cluster driver interface
-
+// Kubernetes on AWS (implementation of cluster driver interface)
 
 
 type Driver struct {
@@ -19,7 +19,7 @@ func (d *Driver) Create() error {
 }
 
 func (d *Driver) DriverName() string {
-	return "dockerswarm"
+	return "kubernetesaws"
 }
 
 func (d *Driver) GetCreateFlags() []mcnflag.Flag {
