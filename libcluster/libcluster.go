@@ -15,7 +15,7 @@ type API interface {
 }
 
 type Client struct {
-
+	*persist.Filestore
 }
 
 func NewClient(storPath, certsDir string) *Client {

@@ -36,11 +36,12 @@ import (
 const (
 	// dockerBridgeIP is the default IP address of the docker0 bridge.
 	dockerBridgeIP = "172.17.0.1"
-	isoFilename    = "boot2docker.iso"
+	//isoFilename    = "boot2docker.iso"
 	// B2DUser is the guest User for tools login
-	B2DUser = "docker"
+	//B2DUser = "docker"
 	// B2DPass is the guest Pass for tools login
-	B2DPass = "tcuser"
+	//B2DPass = "tcuser"
+
 )
 
 type Driver struct {
@@ -51,8 +52,8 @@ type Driver struct {
 	//ISO            string
 	//Boot2DockerURL string
 	CPUS           int
-	NfsImageId     string
-	DockerImageId  string
+	ImageId        string
+	ImageFile      string
 
 	IP         string
 	Port       int
@@ -68,8 +69,8 @@ type Driver struct {
 }
 
 const (
-	defaultSSHUser  = B2DUser
-	defaultSSHPass  = B2DPass
+	defaultSSHUser  = "root"
+	defaultSSHPass  = "welcome2cliqr"
 	defaultCpus     = 2
 	defaultMemory   = 2048
 	defaultDiskSize = 20480
@@ -82,73 +83,85 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 	return []mcnflag.Flag{
 		mcnflag.IntFlag{
 			EnvVar: "VSPHERE_CPU_COUNT",
-			Name:   "vmwarevsphere-cpu-count",
+			Name:   "vsphere-cpu-count",
 			Usage:  "vSphere CPU number for docker VM",
 			Value:  defaultCpus,
 		},
 		mcnflag.IntFlag{
 			EnvVar: "VSPHERE_MEMORY_SIZE",
-			Name:   "vmwarevsphere-memory-size",
+			Name:   "vsphere-memory-size",
 			Usage:  "vSphere size of memory for docker VM (in MB)",
 			Value:  defaultMemory,
 		},
 		mcnflag.IntFlag{
 			EnvVar: "VSPHERE_DISK_SIZE",
-			Name:   "vmwarevsphere-disk-size",
+			Name:   "vsphere-disk-size",
 			Usage:  "vSphere size of disk for docker VM (in MB)",
 			Value:  defaultDiskSize,
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_BOOT2DOCKER_URL",
-			Name:   "vmwarevsphere-boot2docker-url",
+			Name:   "vsphere-boot2docker-url",
 			Usage:  "vSphere URL for boot2docker image",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_VCENTER",
-			Name:   "vmwarevsphere-vcenter",
+			Name:   "vsphere-vcenter",
 			Usage:  "vSphere IP/hostname for vCenter",
 		},
 		mcnflag.IntFlag{
 			EnvVar: "VSPHERE_VCENTER_PORT",
-			Name:   "vmwarevsphere-vcenter-port",
+			Name:   "vsphere-vcenter-port",
 			Usage:  "vSphere Port for vCenter",
 			Value:  defaultSDKPort,
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_USERNAME",
-			Name:   "vmwarevsphere-username",
+			Name:   "vsphere-username",
 			Usage:  "vSphere username",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_PASSWORD",
-			Name:   "vmwarevsphere-password",
+			Name:   "vsphere-password",
 			Usage:  "vSphere password",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_NETWORK",
-			Name:   "vmwarevsphere-network",
+			Name:   "vsphere-network",
 			Usage:  "vSphere network where the docker VM will be attached",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_DATASTORE",
-			Name:   "vmwarevsphere-datastore",
+			Name:   "vsphere-datastore",
 			Usage:  "vSphere datastore for docker VM",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_DATACENTER",
-			Name:   "vmwarevsphere-datacenter",
+			Name:   "vsphere-datacenter",
 			Usage:  "vSphere datacenter for docker VM",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_POOL",
-			Name:   "vmwarevsphere-pool",
+			Name:   "vsphere-pool",
 			Usage:  "vSphere resource pool for docker VM",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "VSPHERE_HOSTSYSTEM",
-			Name:   "vmwarevsphere-hostsystem",
+			Name:   "vsphere-hostsystem",
 			Usage:  "vSphere compute resource where the docker VM will be instantiated (use <cluster>/* or <cluster>/<host> if using a cluster)",
 		},
+		mcnflag.StringFlag{
+			EnvVar: "VSPHERE_OVA_FILE",
+			Name:   "vsphere-ova-file",
+			Usage:  "vSphere ova file location",
+		},
+		// TODO: move the following parameters out?
+		mcnflag.StringFlag{
+			EnvVar: "VSPHERE_IMAGE_ID",
+			Name:   "vsphere-image-id",
+			Usage:  "vSphere image id",
+		},
+
 	}
 }
 
@@ -206,6 +219,8 @@ func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
 	d.SetSwarmConfigFromFlags(flags)
 
 	//d.ISO = d.ResolveStorePath(isoFilename)
+
+	d.ImageId = flags.String("image-id")
 
 	return nil
 }
@@ -423,6 +438,18 @@ func (d *Driver) Create() error {
 		}
 	}
 
+	// check if image already uploaded
+
+	// upload image if not exist
+
+	// create VM from image
+
+	// reconfigure VM
+
+	// upload bundle to VM
+
+
+	/*
 	spec := types.VirtualMachineConfigSpec{
 		Name:     d.MachineName,
 		GuestId:  "otherLinux64Guest",
@@ -440,6 +467,7 @@ func (d *Driver) Create() error {
 		Operation: types.VirtualDeviceConfigSpecOperationAdd,
 		Device:    scsi,
 	})
+	*/
 
 	log.Infof("Creating VM...")
 	folders, err := dc.Folders(ctx)
@@ -453,6 +481,7 @@ func (d *Driver) Create() error {
 		return err
 	}
 
+	/*
 	log.Infof("Uploading Boot2docker ISO ...")
 	dsurl, err := dss.URL(ctx, dc, fmt.Sprintf("%s/%s", d.MachineName, isoFilename))
 	if err != nil {
@@ -462,6 +491,7 @@ func (d *Driver) Create() error {
 	if err = c.Client.UploadFile(d.ISO, dsurl, &p); err != nil {
 		return err
 	}
+	*/
 
 	// Retrieve the new VM
 	vm := object.NewVirtualMachine(c.Client, info.Result.(types.ManagedObjectReference))
@@ -538,10 +568,10 @@ func (d *Driver) Create() error {
 
 	auth := AuthFlag{}
 	flag := FileAttrFlag{}
-	auth.auth.Username = B2DUser
-	auth.auth.Password = B2DPass
+	auth.auth.Username = defaultSSHUser
+	auth.auth.Password = defaultSSHPass
 	flag.SetPerms(0, 0, 660)
-	url, err := fileman.InitiateFileTransferToGuest(ctx, auth.Auth(), "/home/docker/userdata.tar", flag.Attr(), s.Size(), true)
+	url, err := fileman.InitiateFileTransferToGuest(ctx, auth.Auth(), "/root/userdata.tar", flag.Attr(), s.Size(), true)
 	if err != nil {
 		return err
 	}
@@ -561,7 +591,7 @@ func (d *Driver) Create() error {
 	var env []string
 	guestspec := types.GuestProgramSpec{
 		ProgramPath:      "/usr/bin/sudo",
-		Arguments:        "/bin/mv /home/docker/userdata.tar /var/lib/boot2docker/userdata.tar && /usr/bin/sudo tar xf /var/lib/boot2docker/userdata.tar -C /home/docker/ > /var/log/userdata.log 2>&1 && /usr/bin/sudo chown -R docker:staff /home/docker",
+		Arguments:        "/bin/mv /root/userdata.tar /var/lib/cerebro/userdata.tar && /usr/bin/sudo tar xf /var/lib/cerebro/userdata.tar -C /root > /var/log/userdata.log 2>&1 ",
 		WorkingDirectory: "",
 		EnvVariables:     env,
 	}
